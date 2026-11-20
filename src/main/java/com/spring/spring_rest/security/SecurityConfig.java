@@ -42,7 +42,8 @@ public class SecurityConfig {
         .authorizeHttpRequests(auth -> auth
             .requestMatchers("/api/auth/**").permitAll()
             .requestMatchers(HttpMethod.OPTIONS, "/**").permitAll()
-            .requestMatchers("/api/students/**").hasAnyAuthority("USER", "ADMIN")
+            .requestMatchers("/api/students/**")
+            .hasAnyAuthority("USER", "ADMIN")
             .anyRequest().authenticated())
         .httpBasic(Customizer.withDefaults())
         .build();
@@ -63,7 +64,8 @@ public class SecurityConfig {
 
     configuration.setAllowCredentials(true);
 
-    UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+    UrlBasedCorsConfigurationSource source =
+        new UrlBasedCorsConfigurationSource();
     source.registerCorsConfiguration("/**", configuration);
     return source;
   }

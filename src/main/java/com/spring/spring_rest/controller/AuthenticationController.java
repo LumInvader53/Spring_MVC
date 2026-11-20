@@ -7,14 +7,11 @@ import com.spring.spring_rest.entity.Auth_Role;
 import com.spring.spring_rest.entity.Auth_User;
 import com.spring.spring_rest.repository.AuthRoleRepository;
 import com.spring.spring_rest.repository.AuthUserRepository;
-
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -138,9 +135,18 @@ public class AuthenticationController {
     return new ResponseEntity<>("Sign in successfully!", HttpStatus.OK);
   }
 
+  /**
+   * Authenticates the provided credentials and creates a session containing
+   * the authenticated security context.
+   *
+   * @param authLoginDto the DTO containing the username and password to
+   *                     authenticate
+   * @param request      the HTTP request used to create or reuse a session
+   * @return an HTTP 200 response with a session authentication confirmation
+   */
   @PostMapping("/auth_login_session")
-  public ResponseEntity<?> loginWithSession(@RequestBody AuthLoginDto authLoginDto,
-      HttpServletRequest request) {
+  public ResponseEntity<?> loginWithSession(@RequestBody
+      AuthLoginDto authLoginDto, HttpServletRequest request) {
 
     Authentication authentication = authenticationManager.authenticate(
         new UsernamePasswordAuthenticationToken(authLoginDto.getUsername(),
@@ -148,24 +154,31 @@ public class AuthenticationController {
 
     SecurityContextHolder.getContext().setAuthentication(authentication);
     HttpSession session = request.getSession(true);
-    session.setAttribute("SPRING_SECURITY_CONTEXT", SecurityContextHolder.getContext());
+    session.setAttribute("SPRING_SECURITY_CONTEXT",
+        SecurityContextHolder.getContext());
 
     Map<String, String> response = new HashMap<>();
-    response.put("message", "Authenticated successfully via session cookie");
+    response.put("message",
+        "Authenticated successfully via session cookie");
     return ResponseEntity.ok(response);
   }
 
+  /**
+   * Invalidates the current HTTP session and clears the security context.
+   *
+   * @param request the HTTP request containing the session to invalidate
+   * @return an HTTP 401 response confirming that the user was logged out
+   */
   @PostMapping("/logout")
   public ResponseEntity<String> logout(HttpServletRequest request) {
-      HttpSession session = request.getSession(false);
-      if(session != null){
-        session.invalidate();
-      }
-      SecurityContextHolder.clearContext();
-      return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
+    HttpSession session = request.getSession(false);
+    if (session != null) {
+      session.invalidate();
+    }
+    SecurityContextHolder.clearContext();
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
         .body("Logged out from session container.");
   }
-
 
   public AuthenticationManager getAuthenticationManager() {
     return authenticationManager;

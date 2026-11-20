@@ -7,7 +7,7 @@ async function createStudent(studentData) {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(studentData),
-      credentials: "include"
+      credentials: "include",
     });
 
     if (response.ok) {
@@ -53,7 +53,7 @@ function resetForm() {
 async function getAllStudents() {
   try {
     const response = await fetch(API_URL, {
-      credentials: "include"
+      credentials: "include",
     });
     if (!response.ok) throw new Error("Network response was not ok");
 
@@ -87,7 +87,7 @@ document.addEventListener("DOMContentLoaded", getAllStudents);
 async function initializeStudentFormById(id) {
   try {
     const response = await fetch(`${API_URL}/${id}`, {
-      credentials: "include"
+      credentials: "include",
     });
     if (!response.ok) throw new Error("Could not fetch student details");
 
@@ -114,7 +114,7 @@ async function updateStudent(id, studentData) {
       method: "PUT",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(studentData),
-      credentials: "include"
+      credentials: "include",
     });
 
     if (response.ok) {
@@ -171,28 +171,27 @@ async function loginUser(loginDto) {
 }
 
 async function logoutUser() {
-  try{
+  try {
     await fetch(`${API_AUTH}/logout`, {
       method: "POST",
-      credentials: "include"
+      credentials: "include",
     });
     document.getElementById("studentTableBody").innerHTML = "";
     resetForm();
     alert("Logged out successfully");
 
-    try{
-        await fetch(API_URL, {
-          method: "GET",
-          headers: {
-            "Authorization": "Basic " + btoa("invalid_user:wrong_password")
-          }
-        });
-    }catch (error){
+    try {
+      await fetch(API_URL, {
+        method: "GET",
+        headers: {
+          Authorization: "Basic " + btoa("invalid_user:wrong_password"),
+        },
+      });
+    } catch (error) {
       console.log("Browser credential cache cleared.");
     }
     window.location.reload();
-
-  }catch(error){
+  } catch (error) {
     console.error("Logout transmission crash:", error);
   }
 }
