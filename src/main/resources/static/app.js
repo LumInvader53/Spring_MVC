@@ -13,6 +13,7 @@ async function createStudent(studentData) {
     if (response.ok) {
       alert("Student added successfully");
       resetForm();
+      getAllStudents();
     } else {
       alert("Error adding student");
     }
