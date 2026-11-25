@@ -1,6 +1,12 @@
 const API_URL = "http://localhost:8080/api/students";
 const API_AUTH = "http://localhost:8080/api/auth";
 
+/**
+ * Creates a student using the supplied form data.
+ * @param {{firstName: string,
+ *  lastName: string, email: string}} studentData Student details to create.
+ * @returns {Promise<void>}
+ */
 async function createStudent(studentData) {
   try {
     const response = await fetch(API_URL, {
@@ -22,7 +28,8 @@ async function createStudent(studentData) {
   }
 }
 
-document.getElementById("studentForm").addEventListener("submit", function (e) {
+document.getElementById("studentForm")
+  .addEventListener("submit", function (e) {
   e.preventDefault();
 
   if (!validateStudentForm()) {
@@ -42,6 +49,10 @@ document.getElementById("studentForm").addEventListener("submit", function (e) {
   }
 });
 
+/**
+ * Clears the student form and restores its add-mode button state.
+ * @returns {void}
+ */
 function resetForm() {
   document.getElementById("studentId").value = "";
   document.getElementById("studentForm").reset();
@@ -51,6 +62,10 @@ function resetForm() {
   submitBtn.style.backgroundColor = "#28a745";
 }
 
+/**
+ * Fetches all students and renders them in the student table.
+ * @returns {Promise<void>}
+ */
 async function getAllStudents() {
   try {
     const response = await fetch(API_URL, {
@@ -70,8 +85,10 @@ async function getAllStudents() {
                     <td>${student.lastName}</td>
                     <td>${student.email}</td>
                     <td>
-                        <button class="btn-edit" onclick="initializeStudentFormById(${student.id})">Edit</button>
-                        <button class="btn-delete" onclick="deleteStudent(${student.id})">Delete</button>
+                        <button class="btn-edit"
+              onclick="initializeStudentFormById(${student.id})">Edit</button>
+                        <button class="btn-delete"
+              onclick="deleteStudent(${student.id})">Delete</button>
                     </td>
                 </tr>
             `;
@@ -85,6 +102,11 @@ async function getAllStudents() {
 
 document.addEventListener("DOMContentLoaded", getAllStudents);
 
+/**
+ * Loads a student's details into the form for editing.
+ * @param {number|string} id The student's identifier.
+ * @returns {Promise<void>}
+ */
 async function initializeStudentFormById(id) {
   try {
     const response = await fetch(`${API_URL}/${id}`, {
@@ -109,6 +131,13 @@ async function initializeStudentFormById(id) {
   }
 }
 
+/**
+ * Updates an existing student with the supplied form data.
+ * @param {number|string} id The student's identifier.
+ * @param {{firstName: string,
+ *  lastName: string, email: string}} studentData Updated student details.
+ * @returns {Promise<void>}
+ */
 async function updateStudent(id, studentData) {
   try {
     const response = await fetch(`${API_URL}/${id}`, {
@@ -130,6 +159,11 @@ async function updateStudent(id, studentData) {
   }
 }
 
+/**
+ * Deletes a student after the user confirms the action.
+ * @param {number|string} id The student's identifier.
+ * @returns {Promise<void>}
+ */
 async function deleteStudent(id) {
   if (confirm("Are you sure you want to delete this student?")) {
     try {
@@ -151,6 +185,12 @@ async function deleteStudent(id) {
   }
 }
 
+/**
+ * Authenticates a user and redirects to the student page on success.
+ * @param {{username: string,
+ *  password: string}} loginDto The user's login credentials.
+ * @returns {Promise<void>}
+ */
 async function loginUser(loginDto) {
   try {
     const response = await fetch(`${API_AUTH}/auth_login_session`, {
@@ -171,6 +211,10 @@ async function loginUser(loginDto) {
   }
 }
 
+/**
+ * Ends the current session, clears the student form, and reloads the page.
+ * @returns {Promise<void>}
+ */
 async function logoutUser() {
   try {
     await fetch(`${API_AUTH}/logout`, {
